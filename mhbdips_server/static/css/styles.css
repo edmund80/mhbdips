@@ -1,0 +1,144 @@
+body h1 {
+  text-align: center;
+  font-size: 3rem;
+  font-family: Handlee;
+  color: #de7aff;
+  margin: 20px;
+  padding: 30px;
+}
+body h2 {
+  text-align: center;
+  font-size: 2.6rem;
+  font-family: Calligraffitti;
+  color: #de7aff;
+  margin: 20px;
+  padding: 30px;
+}
+body h3 {
+  text-align: center;
+  font-size: 2rem;
+  font-family: Caveat;
+  color: #de7aff;
+}
+body .navbar {
+  width: 100%;
+  background-color: #b9e3f7;
+  height: 100px;
+  padding: 10px;
+}
+body .navbar .navbar-nav {
+  font-size: 2rem;
+}
+body .navbar i {
+  color: #de7aff;
+}
+body .navbar i:hover {
+  color: #fffac0;
+}
+body .navbar .nav-item {
+  padding: 10px;
+  margin-right: 10px;
+}
+body .navbar .nav-link {
+  color: #de7aff;
+}
+body .navbar .nav-link:hover {
+  color: #fffac0;
+}
+.img-fluid {
+  width: 97%;
+  padding: 10px;
+  height: 40rem;
+}
+p {
+  justify-content: center;
+  text-align: center;
+  font-size: 1rem;
+  font-family: Playpen Sans;
+  color: #de7aff;
+}
+.row {
+  width: auto;
+  padding: 20px;
+}
+.card {
+  width: 1.618rem;
+  margin: 10px;
+  padding: 70px;
+  background-color: #b9e3f7;
+}
+.card .card-title {
+  color: #de7aff;
+}
+.card .card-img-top {
+  width: auto;
+}
+.form-control {
+  padding: 20px;
+}
+input {
+  padding: 10px;
+}
+.list-group-item {
+  color: #de7aff;
+  background-color: #fffac0;
+}
+.select {
+  color: #de7aff;
+  margin: 5px;
+  padding: 5px;
+}
+.label {
+  color: #de7aff;
+  margin: 5px;
+  padding: 10px;
+}
+.contact {
+  margin: 20px;
+  padding: 20px;
+}
+.btn {
+  background-color: #fffac0;
+  color: #de7aff;
+  border-radius: 20px;
+  padding: 10px;
+  font-size: 1rem;
+}
+.btn:hover {
+  color: #fffac0;
+  background-color: #de7aff;
+}
+.item-price {
+  color: #de7aff;
+  padding: 10px;
+}
+.quantity {
+  color: #de7aff;
+}
+.cart-counter {
+  background-color: #de7aff;
+  color: #fffac0;
+  border-radius: 50%;
+  padding: 5px 10px;
+}
+.owner {
+  width: 30rem;
+}
+footer {
+  height: 100px;
+  background-color: #b9e3f7;
+  text-align: center;
+  padding: 20px;
+}
+.shopping-cart {
+  width: 500px;
+  padding: 20px;
+}
+.form {
+  width: 100%;
+}
+.cart {
+  width: 100%;
+  padding: 10px;
+}
+/*# sourceMappingURL=styles.css.map */
