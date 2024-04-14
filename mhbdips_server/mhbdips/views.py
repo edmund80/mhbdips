@@ -83,7 +83,6 @@ def cart_view(request):
     return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
 
 
-
 class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactMessage
@@ -108,7 +107,6 @@ def products_view(request):
     else:
         products = Product.objects.all()
     return render(request, 'products.html', {'products': products})
-
 
 
 def product_detail_view(request, product_id):
@@ -168,6 +166,16 @@ def add_review(request, product_id):
     return render(request, 'reviews.html', {'form': form, 'product': product})
 
 
+def update_cart_view(request, item_id):
+    if request.method == 'POST':
+        new_quantity = int(request.POST.get('quantity', 1))
+        if new_quantity > 0:
+            item = OrderDetail.objects.get(id=item_id)
+            item.total_quantity = new_quantity
+            item.save()
+    return redirect('cart')
+
+
 def remove_from_cart(request, item_id):
     try:
         order_detail = OrderDetail.objects.get(id=item_id)
@@ -175,4 +183,3 @@ def remove_from_cart(request, item_id):
         return JsonResponse({'success': True})
     except OrderDetail.DoesNotExist:
         return JsonResponse({'success': False})
-

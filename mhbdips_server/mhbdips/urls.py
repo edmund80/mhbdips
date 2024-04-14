@@ -4,7 +4,7 @@ from django.urls import path
 from .views import (
     home, account_login, account_update_profile,
     cart_view, about_view, products_view, contact_view, product_detail_view, account_registration_view,
-    add_to_order_details, favorite, add_review, remove_from_cart
+    add_to_order_details, favorite, add_review, remove_from_cart, update_cart_view
 )
 
 urlpatterns = [
@@ -22,6 +22,7 @@ urlpatterns = [
     path('add_to_order_details/', add_to_order_details, name='add_to_order_details'),
     path('reviews/', add_review, name='reviews'),
     path('reviews/<int:product_id>/', add_review, name='add_review'),
+    path('update_cart/<int:item_id>/', update_cart_view, name='update_cart'),
     path('remove_from_cart/<int:item_id>/', remove_from_cart, name='remove_from_cart'),
 ]
 
