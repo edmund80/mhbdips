@@ -2,28 +2,37 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
+from .models import Review
+
+from mhbdips.models import Account
 
 
 class AccountRegistrationForm(UserCreationForm):
-    email = forms.EmailField(label='Email')
-    first_name = forms.CharField(label='First Name')
-    last_name = forms.CharField(label='Last Name')
-    address = forms.CharField(label='Address')
-    city = forms.CharField(label='City')
-    state = forms.CharField(label='State')
-    zipcode = forms.IntegerField(label='Zipcode', required=True)
+    first_name = forms.CharField(max_length=30)
+    last_name = forms.CharField(max_length=30)
+    address = forms.CharField(max_length=255)
+    city = forms.CharField(max_length=100)
+    state = forms.CharField(max_length=2)
+    zipcode = forms.CharField(max_length=10)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'address', 'city', 'state', 'zipcode')
 
     def save(self, commit=True):
-        user = super(AccountRegistrationForm, self).save(commit=False)
+        user = super().save(commit=False)
         user.email = self.cleaned_data['email']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
         if commit:
             user.save()
+            account = Account.objects.create(
+                user=user,
+                first_name=self.cleaned_data['first_name'],
+                last_name=self.cleaned_data['last_name'],
+                address=self.cleaned_data['address'],
+                city=self.cleaned_data['city'],
+                state=self.cleaned_data['state'],
+                zipcode=self.cleaned_data['zipcode']
+            )
         return user
 
 
@@ -49,3 +58,9 @@ class ContactForm(forms.Form):
     name = forms.CharField(label='Name', max_length=100)
     email = forms.EmailField(label='Email')
     message = forms.CharField(label='Message', widget=forms.Textarea)
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comments']

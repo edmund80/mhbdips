@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Product, OrderDetail, Shipper, Invoice, Review,ContactMessage
+from .models import Product, OrderDetail, Shipper, Invoice, Review,ContactMessage, Account
 
 # Register your models here.
+admin.site.register(Account)
 admin.site.register(Product)
 admin.site.register(OrderDetail)
 admin.site.register(Shipper)

@@ -3,69 +3,20 @@ from random import sample
 from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render, redirect
 from rest_framework import generics
 from django.contrib.auth.forms import UserChangeForm
-from .forms import UserChangeForm, AccountLoginForm, AccountRegistrationForm, ContactForm
-from .models import Product, OrderDetail, Shipper, Invoice, Review, ContactMessage
-from .serializers import ProductSerializer, OrderDetailSerializer, \
-    ShipperSerializer, InvoiceSerializer, ReviewSerializer
+from rest_framework.generics import get_object_or_404
+
+from .forms import UserChangeForm, AccountLoginForm, AccountRegistrationForm, ContactForm, ReviewForm
+from .models import Product, OrderDetail, ContactMessage
 
 
 def home(request):
     product_5 = Product.objects.get(id=5)
     featured_products = Product.objects.filter(featured=True)
     return render(request, 'home.html', {'product': product_5, 'featured_products': featured_products})
-
-
-class ProductListCreateView(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-
-class OrderDetailListCreateView(generics.ListCreateAPIView):
-    queryset = OrderDetail.objects.all()
-    serializer_class = OrderDetailSerializer
-
-
-class OrderDetailRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = OrderDetail.objects.all()
-    serializer_class = OrderDetailSerializer
-
-
-class ShipperListCreateView(generics.ListCreateAPIView):
-    queryset = Shipper.objects.all()
-    serializer_class = ShipperSerializer
-
-
-class ShipperRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Shipper.objects.all()
-    serializer_class = ShipperSerializer
-
-
-class InvoiceListCreateView(generics.ListCreateAPIView):
-    queryset = Invoice.objects.all()
-    serializer_class = InvoiceSerializer
-
-
-class InvoiceRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Invoice.objects.all()
-    serializer_class = InvoiceSerializer
-
-
-class ReviewListCreateView(generics.ListCreateAPIView):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
-
-
-class ReviewRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
 
 
 def account_registration_view(request):
@@ -121,16 +72,16 @@ def about_view(request):
     return render(request, 'about.html')
 
 
-def cart_view(request):
-    return render(request, 'cart.html')
-
-
 def favorite(request):
-    if request.user.is_authenticated:
-        favorite_products = request.user.favorite_products.all()
-    else:
-        favorite_products = None
-    return render(request, 'favorites.html', {'favorite_products': favorite_products})
+    # Your favorite logic here
+    return render(request, 'favorite.html')
+
+
+def cart_view(request):
+    cart_items = OrderDetail.objects.filter(user=request.user)
+    total_price = sum(item.product.price * item.total_quantity for item in cart_items)
+    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
+
 
 
 class ContactForm(forms.ModelForm):
@@ -151,12 +102,77 @@ def contact_view(request):
 
 
 def products_view(request):
-    products = Product.objects.all()
+    search_term = request.GET.get('search', '')
+    if search_term:
+        products = Product.objects.filter(name__icontains=search_term)
+    else:
+        products = Product.objects.all()
     return render(request, 'products.html', {'products': products})
+
 
 
 def product_detail_view(request, product_id):
     product = Product.objects.get(pk=product_id)
     random_products = sample(list(Product.objects.exclude(pk=product_id)), 3)
-    print(random_products)  # Check the contents in your console
+    print(random_products)
     return render(request, 'product_detail.html', {'product': product, 'random_products': random_products})
+
+
+def get_user_from_request(request):
+    if request.user.is_authenticated:
+        return request.user
+    return None
+
+
+@login_required
+def add_to_order_details(request):
+    if request.method == 'POST':
+        product_id = request.POST.get('product_id')
+        quantity = int(request.POST.get('quantity', 1))
+        product = Product.objects.get(id=product_id)
+        total_price = product.price * quantity
+
+        # Get the user info
+        account = request.user.account
+
+        # Create the order
+        order_detail = OrderDetail.objects.create(
+            user=request.user,
+            name=f"{account.first_name} {account.last_name}",
+            address=account.address,
+            city=account.city,
+            state=account.state,
+            zipcode=account.zipcode,
+            email=request.user.email,
+            product=product,
+            total_quantity=quantity,
+            total_price=total_price,
+            shipper=None
+        )
+
+    return render(request, 'products.html', {})
+
+
+def add_review(request, product_id):
+    product = Product.objects.get(id=product_id)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.product = product
+            review.save()
+            return redirect('product_detail', product_id=product_id)
+    else:
+        form = ReviewForm()
+    return render(request, 'reviews.html', {'form': form, 'product': product})
+
+
+def remove_from_cart(request, item_id):
+    try:
+        order_detail = OrderDetail.objects.get(id=item_id)
+        order_detail.delete()
+        return JsonResponse({'success': True})
+    except OrderDetail.DoesNotExist:
+        return JsonResponse({'success': False})
+

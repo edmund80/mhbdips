@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from mhbdips.models import Product, OrderDetail, Shipper, Invoice, Review
+from mhbdips.models import Product, OrderDetail, Shipper, Invoice, Review, Account
+
+
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = '__all__'
 
 
 class ProductSerializer(serializers.ModelSerializer):

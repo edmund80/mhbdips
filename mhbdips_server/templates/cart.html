@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Shopping Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -14,7 +14,6 @@
     rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Calligraffitti&family=Caveat&family=Handlee&family=Open+Sans&family=Playpen+Sans&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'CSS/styles.less' %}">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
         body h1 {
@@ -198,9 +197,6 @@ li a:hover {
               <a class="nav-link" aria-current="page" href="{% url 'products' %}">Products</a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" aria-current="page" href="{% url 'favorite' %}">Favorites</a>
-            </li>
-            <li class="nav-item active">
               <a class="nav-link" aria-current="page" href="{% url 'about' %}">About</a>
             </li>
             <li class="nav-item active">
@@ -214,8 +210,8 @@ li a:hover {
                   class="fa-sharp fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
-          <form class="d-flex ml-auto">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+         <form class="d-flex ml-auto" id="searchForm">
+            <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
           </form>
         </div>
@@ -271,14 +267,23 @@ li a:hover {
                 </form>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="your-cart">
-                    <h4>Your Cart</h4>
-                    <ul class="list-group" id="cartItemsContainer">
-                        <!-- Cart items dynamically added here -->
-                    </ul>
-                    <span class="badge bg-secondary" id="cartItemCount">0</span>
-                </div>
-            </div>
+    <div class="your-cart">
+        <h4>Your Cart</h4>
+        <ul>
+            {% for item in cart_items %}
+            <li id="cart-item-{{ item.id }}" class="cart-item">
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 20%; padding: 10px"/> - {{ item.product.name }} - ${{ item.product.price }} - Quantity: <span class="cart-item-quantity">{{ item.total_quantity }}</span>
+                <form action="{% url 'remove_from_cart' item.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger remove-item-btn">Remove</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        <p>Total Price: ${{ total_price }}</p>
+    </div>
+</div>
+
         </div>
     </div>
 </section>
@@ -290,7 +295,6 @@ li a:hover {
                 <ul>
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'products' %}">Products</a></li>
-                    <li><a href="{% url 'favorite' %}">Favorites</a></li>
                     <li><a href="{% url 'about' %}">About</a></li>
                     <li><a href="{% url 'contact' %}">Contact</a></li>
                     <li><a href="{% url 'cart' %}"><i class="fa-sharp fa-solid fa-cart-shopping"></i></a></li>
@@ -311,5 +315,77 @@ li a:hover {
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static '/javascript/index.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.remove-item-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            let itemId = this.dataset.itemId;
+            fetch('/remove_from_cart/' + itemId + '/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                if (data.success) {
+                    // Remove Item
+                    let cartItem = document.getElementById('cart-item-' + itemId);
+                    if (cartItem) {
+                        cartItem.remove();
+                        // Update the Cart
+                        updateCartInfo();
+                    }
+                } else {
+                    alert('Failed to remove item from cart.');
+                }
+            })
+            .catch(error => {
+                console.error('Error removing item from cart:', error);
+            });
+        });
+    });
+});
+
+    function updateCartInfo() {
+    let totalPrice = 0;
+    document.querySelectorAll('.cart-item').forEach(function(item) {
+        let price = parseFloat(item.querySelector('.cart-item-price').textContent);
+        let quantity = parseInt(item.querySelector('.cart-item-quantity').textContent);
+        totalPrice += price * quantity;
+    });
+    document.getElementById('total-price').textContent = totalPrice.toFixed(2);
+}
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            let cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    let searchTerm = document.getElementById('searchInput').value;
+    if (searchTerm.trim() !== '') {
+        // Redirect to the product_detail Page
+        window.location.href = '/products/?search=' + encodeURIComponent(searchTerm);
+    }
+});
+</script>
 </body>
 </html>
