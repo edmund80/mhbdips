@@ -258,7 +258,7 @@ li a:hover {
 <script src="{% static '/javascript/index.js' %}"></script>
 <script>
     document.getElementById('searchForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault();
     let searchTerm = document.getElementById('searchInput').value;
     if (searchTerm.trim() !== '') {
         // Redirect to the product_detail Page

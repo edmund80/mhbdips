@@ -89,10 +89,17 @@ p {
   padding: 20px;
 }
 
+.card-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: row;
+}
+
 .card {
-  width: 1.618rem;
+  flex: 0 0 30rem;
   margin: 10px;
-  padding: 70px;
+  padding: 20px;
   background-color: #b9e3f7;
 }
 
@@ -145,18 +152,6 @@ input {
 .btn:hover {
   color: #fffac0;
   background-color: #de7aff;
-}
-
-.item-price {
-  color: #de7aff;
-  padding: 10px;
-}
-
-.cart-counter {
-  background-color: #de7aff;
-  color: #fffac0;
-  border-radius: 50%;
-  padding: 5px 10px;
 }
 
 .footer {
@@ -233,7 +228,7 @@ li a:hover {
   <div class="container-fluid">
     <div class="row">
       <div class="owner col-sm-12 col-md-6 col-lg-6" style="width: 60%">
-          <img class="owner mx-auto d-block" src="{% static 'images/ad.jpg' %}" alt="Owner Photo" style="width: 55%" />
+          <img class="owner mx-auto d-block" src="{% static 'images/ad.jpg' %}" alt="Owner Photo" style="width: 50%" />
       </div>
       <div class="col" style="text-align: center">
         <h3>Amanda is a veteran of the United States Army</h3>
@@ -246,22 +241,38 @@ li a:hover {
 </section>
 <section role="ownersupports">
   <h2>I Proudly Support These Charities</h2>
-    <div class="owner mx-auto d-block">
-    <a href="link_placeholder" target="_blank">
-      <img src="image_placeholder1" alt="alt_placeholder1">
-    </a>
-    <a href="link_placeholder" target="_blank">
-      <img src="image_placeholder2" alt="alt_placeholder2">
-    </a>
-    <a href="link_placeholder" target="_blank">
-      <img src="image_placeholder3" alt="alt_placeholder3">
-    </a>
-  </div>
 </section>
 <section>
-  <div id="organizations-container" class="row" role="typesoforganizations">
-  </div>
+  <div class="container-fluid">
+      <div class="card-wrapper">
+        <div class="card" style="margin-right: 100px">
+          <img src="https://static.wixstatic.com/media/2069ab_02b719e4ceee4ed2b6692a94bc4bd494~mv2.png/v1/crop/x_0,y_611,w_2169,h_842/fill/w_330,h_130,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/GRACE%20AFTER%20FIRE%20Logo_No%20Tagline_Red.png" alt="Grace After Fire" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Grace After Fire</h5>
+            <p class="card-text">Protect. Connect. Renew Grace After Fire was first started as The Women's Heart...</p>
+            <a href="https://www.graceafterfire.org/" target="_blank" class="btn">Grace After Fire</a>
+          </div>
+        </div>
+        <div class="card" style="margin-right: 100px">
+          <img src="https://www.nationalbreastcancer.org/wp-content/themes/nbcf/assets/img/white-logo.svg" alt="Breast Cancer Awareness" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Breast Cancer Awareness</h5>
+            <p class="card-text">For the 31 days of Breast Cancer Awareness Month (BCAM), pink ribbons appear...</p>
+            <a href="https://www.nationalbreastcancer.org/breast-cancer-awareness-month/" target="_blank" rel="noopener noreferrer" class="btn">Breast Cancer Awareness</a>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://www.samhsa.gov/sites/default/files/mental-health-awareness-month-2023-banner.jpg" alt="Mental Awareness" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Mental Awareness</h5>
+            <p class="card-text">Mental Health Awareness Month was established in 1949 to increase awareness...</p>
+            <a href="https://www.samhsa.gov/mental-health-awareness-month" target="_blank" class="btn">Mental Awareness</a>
+          </div>
+        </div>
+      </div>
+    </div>
 </section>
+
 <footer class="footer">
     <div class="container">
         <div class="row">
@@ -293,10 +304,10 @@ li a:hover {
 <script src="{% static '/javascript/index.js' %}"></script>
 <script>
    document.getElementById('searchForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault();
     let searchTerm = document.getElementById('searchInput').value;
     if (searchTerm.trim() !== '') {
-        // Redirect to the product_detail page for the first product in the search results
+        // Redirect to the product_detail page
         window.location.href = '/products/' + encodeURIComponent(searchTerm);
     }
 });

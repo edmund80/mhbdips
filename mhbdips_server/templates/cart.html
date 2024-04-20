@@ -166,7 +166,7 @@ li a:hover {
   width: 500px;
   padding: 20px;
 }
-.form {
+.form-control {
   width: 100%;
 }
 .cart {
@@ -223,64 +223,27 @@ li a:hover {
         <h2>Checkout Form</h2>
         <div class="row">
             <div class="col-md-6 col-lg-8">
-                <h4>Billing Address</h4>
-                <form class="needs-validation" novalidate>
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Name" required>
-                            <div class="invalid-feedback">
-                                Please enter your name.
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
-                            <input type="email" class="form-control" id="email" placeholder="Email">
-                            <div class="invalid-feedback">
-                                Please enter a valid email address.
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="my-4">
-                    <h4>Payment</h4>
-                    <div class="my-3">
-                        <div class="form-check">
-                            <input id="paymentMethod1" name="paymentMethod" type="radio" class="form-check-input" checked required>
-                            <label class="form-check-label" for="paymentMethod1">Payment Method 1</label>
-                        </div>
-                        <div class="form-check">
-                            <input id="paymentMethod2" name="paymentMethod" type="radio" class="form-check-input" required>
-                            <label class="form-check-label" for="paymentMethod2">Payment Method 2</label>
-                        </div>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label for="creditCard" class="form-label">Credit Card</label>
-                            <input type="text" class="form-control" id="creditCard" placeholder="Credit Card" required>
-                            <div class="invalid-feedback">
-                                Please enter your credit card number.
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="my-4">
-                    <button class="btn btn-primary" type="submit">Proceed to Checkout</button>
-                </form>
+               <form method="post" class="text-center">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Proceed to Checkout</button>
+</form>
             </div>
             <div class="col-md-6 col-lg-4">
     <div class="your-cart">
-        <h4>Your Cart</h4>
+        <h3>Your Cart</h3>
         <ul>
             {% for item in cart_items %}
 <li id="cart-item-{{ item.id }}" class="cart-item">
-    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 20%; padding: 10px"/> - {{ item.product.name }} - ${{ item.product.price }} - Quantity:
+    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 30%; margin-bottom: 20px"/> - {{ item.product.name }} - ${{ item.product.price }} - Quantity:
     <form action="{% url 'update_cart' item.id %}" method="post">
         {% csrf_token %}
-        <input type="number" name="quantity" value="{{ item.total_quantity }}" min="1" max="999">
-        <button type="submit">Update</button>
+        <input type="number" name="quantity" style="margin-right: 20px" value="{{ item.total_quantity }}" min="1" max="999">
+        <button class="btn btn-primary" type="submit">Update</button>
     </form>
     <form action="{% url 'remove_from_cart' item.id %}" method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger remove-item-btn" style="padding: 10px">Remove</button>
+        <button type="submit" class="btn btn-danger remove-item-btn" style="margin-top: 20px; margin-bottom: 20px">Remove</button>
     </form>
 </li>
 {% endfor %}
@@ -335,19 +298,8 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => {
                 if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            })
-            .then(data => {
-                if (data.success) {
-                    // Remove Item
-                    let cartItem = document.getElementById('cart-item-' + itemId);
-                    if (cartItem) {
-                        cartItem.remove();
-                        // Update the Cart
-                        updateCartInfo();
-                    }
+                    // Reload the cart page
+                    window.location.reload();
                 } else {
                     alert('Failed to remove item from cart.');
                 }
@@ -358,6 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
 
     function updateCartInfo() {
     let totalPrice = 0;
@@ -385,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.getElementById('searchForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault();
     let searchTerm = document.getElementById('searchInput').value;
     if (searchTerm.trim() !== '') {
         // Redirect to the product_detail Page

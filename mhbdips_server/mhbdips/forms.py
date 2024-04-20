@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.shortcuts import redirect, render
 from .models import Review
 
@@ -61,6 +62,20 @@ class ContactForm(forms.Form):
 
 
 class ReviewForm(forms.ModelForm):
+    rating = forms.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+
     class Meta:
         model = Review
         fields = ['rating', 'comments']
+
+
+class CheckoutForm(forms.Form):
+    name = forms.CharField(label='Name', max_length=100)
+    email = forms.EmailField(label='Email', required=False)
+    address = forms.CharField(label='Address', max_length=255)
+    state = forms.CharField(label='State', max_length=100)
+    zip_code = forms.CharField(label='ZIP Code', max_length=10)
+    payment_method = forms.ChoiceField(choices=[('payment1', 'Payment Method 1'), ('payment2', 'Payment Method 2')])
+    credit_card = forms.CharField(label='Credit Card', max_length=16)

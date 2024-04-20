@@ -3,14 +3,12 @@ from random import sample
 from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render, redirect
-from rest_framework import generics
 from django.contrib.auth.forms import UserChangeForm
 from rest_framework.generics import get_object_or_404
 
-from .forms import UserChangeForm, AccountLoginForm, AccountRegistrationForm, ContactForm, ReviewForm
-from .models import Product, OrderDetail, ContactMessage
+from .forms import UserChangeForm, AccountLoginForm, AccountRegistrationForm, ContactForm, ReviewForm, CheckoutForm
+from .models import Product, OrderDetail, ContactMessage, Review
 
 
 def home(request):
@@ -78,9 +76,24 @@ def favorite(request):
 
 
 def cart_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
     cart_items = OrderDetail.objects.filter(user=request.user)
     total_price = sum(item.product.price * item.total_quantity for item in cart_items)
-    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
+
+    form = CheckoutForm()
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            pass
+
+    context = {
+        'form': form,
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+    return render(request, 'cart.html', context)
 
 
 class ContactForm(forms.ModelForm):
@@ -151,19 +164,21 @@ def add_to_order_details(request):
     return render(request, 'products.html', {})
 
 
-def add_review(request, product_id):
-    product = Product.objects.get(id=product_id)
+def add_review(request, product_id=None):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
             review.user = request.user
-            review.product = product
+            review.product_id = product_id
             review.save()
             return redirect('product_detail', product_id=product_id)
     else:
         form = ReviewForm()
-    return render(request, 'reviews.html', {'form': form, 'product': product})
+
+    product = get_object_or_404(Product, id=product_id)
+    reviews = Review.objects.filter(product=product)
+    return render(request, 'reviews.html', {'form': form, 'product': product, 'reviews': reviews})
 
 
 def update_cart_view(request, item_id):
@@ -180,6 +195,6 @@ def remove_from_cart(request, item_id):
     try:
         order_detail = OrderDetail.objects.get(id=item_id)
         order_detail.delete()
-        return JsonResponse({'success': True})
+        return redirect('cart')
     except OrderDetail.DoesNotExist:
-        return JsonResponse({'success': False})
+        return redirect('cart')

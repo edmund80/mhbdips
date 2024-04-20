@@ -232,42 +232,29 @@ li a:hover {
                 <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
                 <h2>{{ product.name }}</h2>
                 <p>Price: ${{ product.price }}</p>
-                 <form class="form-control" id="order-details-form-{{ product.id }}" method="post" action="{% url 'add_to_order_details' %}">
-                     {% csrf_token %}
-                     <input type="hidden" name="product_id" value="{{ product.id }}">
-                     <label class="label" for="quantity" style="margin-bottom: 10px">Quantity:</label>
-                     <input class="input" type="number" id="quantity" name="quantity" value="1" min="1">
-                     <button type="submit" class="btn btn-outline-success">Add to Order</button>
-                 </form>
+                <form class="form-control" id="order-details-form-{{ product.id }}" method="post" action="{% url 'add_to_order_details' %}" onsubmit="event.preventDefault(); addToOrderDetails('{{ product.id }}');">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <label class="label" for="quantity" style="margin-bottom: 10px">Quantity:</label>
+                    <input class="input" type="number" id="quantity" name="quantity" value="1" min="1">
+                    <button type="submit" class="btn btn-outline-success">Add to Cart</button>
+                </form>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="row">
-                    <div class="col-md-12">
-                        <img src="{{ product.second_image.url }}" class="img-fluid" alt="{{ product.name }}">
+            <div class="col-md-6 col-lg-6">
+                <h3>Reviews</h3>
+                {% for review in product.review_set.all %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ review.user.username }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Rating: {{ review.rating }}</h6>
+                            <p class="card-text">{{ review.comments }}</p>
+                        </div>
                     </div>
-                    <div class="col-md-12 mt-4">
-                        <h3>Reviews</h3>
-                        {% for review in product.review_set.all %}
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ review.user.username }}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">Rating: {{ review.rating }}</h6>
-                                    <p class="card-text">{{ review.comments }}</p>
-                                </div>
-                            </div>
-                        {% empty %}
-                            <p>No reviews yet.</p>
-                        {% endfor %}
-                        <form class="form-control" method="post" action="{% url 'reviews' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="product_id" value="{{ product.id }}">
-                            <div class="form-group">
-                                <label for="comment">Add a Comment:</label>
-                                <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-outline-primary">Add Review</button>
-                        </form>
-                    </div>
+                {% empty %}
+                    <p>No reviews yet.</p>
+                {% endfor %}
+                <div class="card-body">
+                    <a href="{% url 'add_review' product_id=product.id %}" class="btn btn-outline-primary" style="margin-top: 20px">Add Review</a>
                 </div>
             </div>
         </div>
@@ -324,13 +311,37 @@ li a:hover {
 <script src="{% static 'javascript/index.js' %}"></script>
 <script>
     document.getElementById('searchForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault();
     let searchTerm = document.getElementById('searchInput').value;
     if (searchTerm.trim() !== '') {
         // Redirect to the product_detail Page
         window.location.href = '/products/?search=' + encodeURIComponent(searchTerm);
     }
 });
+
+   function addToOrderDetails(productId) {
+    let form = document.getElementById('order-details-form-' + productId);
+    let formData = new FormData(form);
+    let csrfToken = form.getAttribute('data-csrf-token');
+    fetch(form.getAttribute('action'), {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': csrfToken
+        }
+    })
+    .then(function(response) {
+        if (response.ok) {
+            alert('Item added to cart!');
+        } else {
+            alert('Failed to add item to cart. Please try again.');
+        }
+    })
+    .catch(function(error) {
+        console.error('Error:', error);
+    });
+}
+
 </script>
 </body>
 </html>
