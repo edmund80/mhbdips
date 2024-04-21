@@ -1,13 +1,11 @@
 from random import sample
-
 from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserChangeForm
 from rest_framework.generics import get_object_or_404
-
-from .forms import UserChangeForm, AccountLoginForm, AccountRegistrationForm, ContactForm, ReviewForm, CheckoutForm
+from .forms import AccountLoginForm, AccountRegistrationForm, ContactForm, ReviewForm, CheckoutForm, \
+    CustomPasswordChangeForm
 from .models import Product, OrderDetail, ContactMessage, Review
 
 
@@ -53,26 +51,21 @@ def profile(request):
     return render(request, 'profile.html', {'user': user})
 
 
-def account_update_profile(request):
-    user = request.user
+@login_required
+def update_profile(request):
     if request.method == 'POST':
-        form = UserChangeForm(request.POST, instance=user)
+        form = CustomPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             form.save()
+            # Redirect to the profile page or another appropriate page
             return redirect('profile')
     else:
-        form = UserChangeForm(instance=user)
-
-    return render(request, 'profile.html', {'form': form})
+        form = CustomPasswordChangeForm(request.user)
+    return render(request, 'update_profile.html', {'form': form})
 
 
 def about_view(request):
     return render(request, 'about.html')
-
-
-def favorite(request):
-    # Your favorite logic here
-    return render(request, 'favorite.html')
 
 
 def cart_view(request):

@@ -1,8 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.shortcuts import redirect, render
 from .models import Review
 
 from mhbdips.models import Account
@@ -18,7 +17,9 @@ class AccountRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'address', 'city', 'state', 'zipcode')
+        fields = (
+            'username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'address', 'city', 'state',
+            'zipcode')
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -42,17 +43,24 @@ class AccountLoginForm(forms.Form):
     password = forms.CharField(label='Password', widget=forms.PasswordInput())
 
 
-def UserChangeForm(request):
-    user = request.user
-    if request.method == 'POST':
-        form = UserChangeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')
-    else:
-        form = UserChangeForm(request)
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
 
-    return render(request, 'profile.html', {'form': form})
+
+class UserPasswordChangeForm(PasswordChangeForm):
+    custom_field = forms.CharField(max_length=100)
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Remove Custom Input and label
+        self.fields.pop('custom_field', None)
+        # Remove Hints
+        self.fields['new_password1'].help_text = ''
+        self.fields['new_password2'].help_text = ''
 
 
 class ContactForm(forms.Form):

@@ -114,13 +114,6 @@ input {
   background-color: #de7aff;
 }
 
-.cart-counter {
-  background-color: #de7aff;
-  color: #fffac0;
-  border-radius: 50%;
-  padding: 5px 10px;
-}
-
 .footer {
  width: 100%;
   background-color: #b9e3f7;
@@ -136,6 +129,16 @@ ul {
 li a {
     text-decoration: none;
     color: #de7aff;
+}
+
+a  {
+    text-decoration: none;
+    color: #de7aff;
+    font-size: 1.3rem;
+}
+
+a:hover {
+    color: #fffac0;
 }
 
 li a:hover {
@@ -175,6 +178,12 @@ li a:hover {
                   class="fa-sharp fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
+          {% if user.is_authenticated %}
+            <h3 style="padding-right: 20px">Welcome {{ user.first_name }}</h3>
+            <a href="{% url 'update_profile' %}" style="padding-right: 20px">Update Profile</a>
+          {% endif %}
+
+  
           <form class="d-flex ml-auto" id="searchForm">
             <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
@@ -240,11 +249,6 @@ li a:hover {
                 <h3>MHB Dips</h3>
                 <h3>PO BOX 5555</h3>
                 <h3>Winston Salem, NC, 27106</h3>
-            </div>
-            <div class="col-md-4 text-center">
-                <h3>Social</h3>
-                <a href="http://facebook.com/"><i class="fa-brands fa-facebook fa-xl"></i></a>
-                <a href="http://instagram.com/"><i class="fa-brands fa-instagram fa-xl"></i></a>
             </div>
         </div>
     </div>

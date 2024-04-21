@@ -76,6 +76,16 @@ h3 {
   color: #fffac0;
 }
 
+a  {
+    text-decoration: none;
+    color: #de7aff;
+    font-size: 1.3rem;
+}
+
+a:hover {
+    color: #fffac0;
+}
+
 p {
   justify-content: center;
   text-align: center;
@@ -190,7 +200,7 @@ li a:hover {
             <ul class="navbar-nav me-auto sm-5 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'home' %}"><i class="fa-sharp fa-solid fa-house"></i></a>
-            </li>
+            </li> 
             <li class="nav-item active">
               <a class="nav-link" aria-current="page" href="{% url 'products' %}">Products</a>
             </li>
@@ -208,6 +218,12 @@ li a:hover {
                   class="fa-sharp fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
+          {% if user.is_authenticated %}
+            <h3 style="padding-right: 20px">Welcome {{ user.first_name }}</h3>
+            <a href="{% url 'update_profile' %}" style="padding-right: 20px">Update Profile</a>
+          {% endif %}
+
+  
           <form class="d-flex ml-auto" id="searchForm">
             <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
@@ -231,11 +247,12 @@ li a:hover {
           <img class="owner mx-auto d-block" src="{% static 'images/ad.jpg' %}" alt="Owner Photo" style="width: 50%" />
       </div>
       <div class="col" style="text-align: center">
-        <h3>Amanda is a veteran of the United States Army</h3>
-        <h3>Amanda supports mental awareness</h3>
-        <h3>Amanda supports business owned by veteran woman</h3>
-        <h3>Amanda supports breast cancer awareness</h3>
-      </div>
+    <h3>Amanda is a wife and mother of three</h3>
+    <h3>She is a veteran of the United States Army</h3>
+    <h3>Amanda is passionate about supporting mental health awareness</h3>
+    <h3>She also supports businesses owned by veteran women</h3>
+    <h3>Amanda is an advocate for breast cancer awareness</h3>
+</div>
     </div>
   </div>
 </section>
@@ -290,11 +307,6 @@ li a:hover {
                 <h3>MHB Dips</h3>
                 <h3>PO BOX 5555</h3>
                 <h3>Winston Salem, NC, 27106</h3>
-            </div>
-            <div class="col-md-4 text-center">
-                <h3>Social</h3>
-                <a href="http://facebook.com/"><i class="fa-brands fa-facebook fa-xl"></i></a>
-                <a href="http://instagram.com/"><i class="fa-brands fa-instagram fa-xl"></i></a>
             </div>
         </div>
     </div>

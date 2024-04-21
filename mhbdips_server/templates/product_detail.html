@@ -67,6 +67,17 @@ h3 {
 .navbar .nav-link:hover {
   color: #fffac0;
 }
+
+a  {
+    text-decoration: none;
+    color: #de7aff;
+    font-size: 1.3rem;
+}
+
+a:hover {
+    color: #fffac0;
+}
+
 .img-fluid {
   width: 80%;
   padding: 10px;
@@ -101,24 +112,13 @@ p {
 input {
   padding: 10px;
 }
-.list-group-item {
-  color: #de7aff;
-  background-color: #fffac0;
-}
-.select {
-  color: #de7aff;
-  margin: 5px;
-  padding: 5px;
-}
+
 .label {
   color: #de7aff;
   margin: 5px;
   padding: 10px;
 }
-.contact {
-  margin: 20px;
-  padding: 20px;
-}
+
 .btn {
   background-color: #fffac0;
   color: #de7aff;
@@ -134,22 +134,7 @@ input {
 .product-detail {
     margin: 0;
 }
-.login {
-  height: 300px;
-  padding: 10px;
-}
-.quantity {
-  color: #de7aff;
-}
-.cart-counter {
-  background-color: #de7aff;
-  color: #fffac0;
-  border-radius: 50%;
-  padding: 5px 10px;
-}
-.owner {
-  width: 30rem;
-}
+
 .footer {
  width: 100%;
   background-color: #b9e3f7;
@@ -170,17 +155,6 @@ li a {
 li a:hover {
     color: #fffac0;
 }
-.shopping-cart {
-  width: 500px;
-  padding: 20px;
-}
-.form {
-  width: 100%;
-}
-.cart {
-  width: 100%;
-  padding: 10px;
-}
 
 .logo {
     width: 5%;
@@ -190,40 +164,47 @@ li a:hover {
 <body>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-md">
-    <div class="container-fluid">
+      <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
-                aria-controls="navbarToggler" aria-expanded="true" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+          aria-controls="navbarToggler" aria-expanded="true" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarToggler">
-            <img class="logo" src="{% static 'images/logo.jpg' %}" alt="Company Logo"/>
+            <img class="logo" src="{% static 'images/logo.jpg' %}" alt="Company Logo" />
             <ul class="navbar-nav me-auto sm-5 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'home' %}"><i class="fa-sharp fa-solid fa-house"></i></a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" aria-current="page" href="{% url 'products' %}">Products</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" aria-current="page" href="{% url 'about' %}">About</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" aria-current="page" href="{% url 'contact' %}">Contact</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" aria-current="page" href="{% url 'login' %}">Login</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'cart' %}"><i class="fa-sharp fa-solid fa-cart-shopping"></i></a>
-                </li>
-            </ul>
-            <form class="d-flex ml-auto" id="searchForm">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'home' %}"><i class="fa-sharp fa-solid fa-house"></i></a>
+            </li> 
+            <li class="nav-item active">
+              <a class="nav-link" aria-current="page" href="{% url 'products' %}">Products</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" aria-current="page" href="{% url 'about' %}">About</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" aria-current="page" href="{% url 'contact' %}">Contact</a>
+            </li>
+             <li class="nav-item active">
+              <a class="nav-link" aria-current="page" href="{% url 'login' %}">Login</a>
+            </li>    
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'cart' %}"><i
+                  class="fa-sharp fa-solid fa-cart-shopping"></i></a>
+            </li>
+          </ul>
+          {% if user.is_authenticated %}
+            <h3 style="padding-right: 20px">Welcome {{ user.first_name }}</h3>
+            <a href="{% url 'update_profile' %}" style="padding-right: 20px">Update Profile</a>
+          {% endif %}
+
+  
+          <form class="d-flex ml-auto" id="searchForm">
             <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
           </form>
         </div>
-    </div>
-</nav>
+      </div>
+    </nav>
 
 <section class="product-detail">
     <div class="container">
@@ -253,7 +234,7 @@ li a:hover {
                 {% empty %}
                     <p>No reviews yet.</p>
                 {% endfor %}
-                <div class="card-body">
+                <div class="card-body text-center">
                     <a href="{% url 'add_review' product_id=product.id %}" class="btn btn-outline-primary" style="margin-top: 20px">Add Review</a>
                 </div>
             </div>

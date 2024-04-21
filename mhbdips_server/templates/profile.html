@@ -63,11 +63,7 @@ body .navbar .nav-link {
 body .navbar .nav-link:hover {
   color: #fffac0;
 }
-.img-fluid {
-  width: 97%;
-  padding: 10px;
-  height: 40rem;
-}
+
 p {
   justify-content: center;
   text-align: center;
@@ -79,42 +75,31 @@ p {
   width: auto;
   padding: 20px;
 }
-.card {
+
+        card {
   width: 1.618rem;
   margin: 10px;
   padding: 70px;
   background-color: #b9e3f7;
 }
-.card .card-title {
-  color: #de7aff;
+        
+a  {
+    text-decoration: none;
+    color: #de7aff;
+    font-size: 1.3rem;
 }
-.card .card-img-top {
-  width: auto;
+
+a:hover {
+    color: #fffac0;
 }
+
 .form-control {
   padding: 20px;
 }
 input {
   padding: 10px;
 }
-.list-group-item {
-  color: #de7aff;
-  background-color: #fffac0;
-}
-.select {
-  color: #de7aff;
-  margin: 5px;
-  padding: 5px;
-}
-.label {
-  color: #de7aff;
-  margin: 5px;
-  padding: 10px;
-}
-.contact {
-  margin: 20px;
-  padding: 20px;
-}
+
 .btn {
   background-color: #fffac0;
   color: #de7aff;
@@ -126,22 +111,7 @@ input {
   color: #fffac0;
   background-color: #de7aff;
 }
-.item-price {
-  color: #de7aff;
-  padding: 10px;
-}
-.quantity {
-  color: #de7aff;
-}
-.cart-counter {
-  background-color: #de7aff;
-  color: #fffac0;
-  border-radius: 50%;
-  padding: 5px 10px;
-}
-.owner {
-  width: 30rem;
-}
+
 .footer {
  width: 100%;
   background-color: #b9e3f7;
@@ -162,17 +132,6 @@ li a {
 li a:hover {
     color: #fffac0;
 }
-.shopping-cart {
-  width: 500px;
-  padding: 20px;
-}
-.form {
-  width: 100%;
-}
-.cart {
-  width: 100%;
-  padding: 10px;
-}
 
 .logo {
     width: 5%;
@@ -192,7 +151,7 @@ li a:hover {
             <ul class="navbar-nav me-auto sm-5 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'home' %}"><i class="fa-sharp fa-solid fa-house"></i></a>
-            </li>
+            </li> 
             <li class="nav-item active">
               <a class="nav-link" aria-current="page" href="{% url 'products' %}">Products</a>
             </li>
@@ -210,6 +169,12 @@ li a:hover {
                   class="fa-sharp fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
+          {% if user.is_authenticated %}
+            <h3 style="padding-right: 20px">Welcome {{ user.first_name }}</h3>
+            <a href="{% url 'update_profile' %}" style="padding-right: 20px">Update Profile</a>
+          {% endif %}
+
+  
           <form class="d-flex ml-auto" id="searchForm">
             <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
@@ -217,20 +182,17 @@ li a:hover {
         </div>
       </div>
     </nav>
-<h1>Welcome, {{ user.username }}</h1>
-<p>Email: {{ user.email }}</p>
-<p>First Name: {{ user.first_name }}</p>
-<p>Last Name: {{ user.last_name }}</p>
-<form class="form-control" method="post" action="{% url 'update_profile' %}">
+ <section class="container-fluid">
+
+<form method="post" action="{% url 'update_profile' %}">
     {% csrf_token %}
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="{{ user.email }}" required><br>
-    <label for="first_name">First Name:</label>
-    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required><br>
-    <label for="last_name">Last Name:</label>
-    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required><br>
-    <button type="submit">Update Profile</button>
+    {{ form.as_p }}
+    <div class="d-flex justify-content-center align-items-center">
+        <button class="btn btn-primary" id="form" type="submit">Update Profile</button>
+    </div>
 </form>
+
+ </section>
 
 <footer class="footer">
     <div class="container">
@@ -250,17 +212,11 @@ li a:hover {
                 <h3>PO BOX 5555</h3>
                 <h3>Winston Salem, NC, 27106</h3>
             </div>
-            <div class="col-md-4 text-center">
-                <h3>Social</h3>
-                <a href="http://facebook.com/"><i class="fa-brands fa-facebook fa-xl"></i></a>
-                <a href="http://instagram.com/"><i class="fa-brands fa-instagram fa-xl"></i></a>
-            </div>
         </div>
     </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{% static '/javascript/index.js' %}"></script>
 <script>
     document.getElementById('searchForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -269,6 +225,28 @@ li a:hover {
         // Redirect to the product_detail Page
         window.location.href = '/products/?search=' + encodeURIComponent(searchTerm);
     }
+});
+    
+    document.addEventListener("DOMContentLoaded", function() {
+    const profileForm = document.querySelector('form');
+    profileForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        fetch(profileForm.action, {
+            method: profileForm.method,
+            body: new FormData(profileForm),
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Profile updated successfully!');
+            } else {
+                alert('Profile update failed.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the profile.');
+        });
+    });
 });
 </script>
 </body>

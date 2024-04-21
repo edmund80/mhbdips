@@ -16,7 +16,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
-        body h1 {
+        a {
+        text-decoration: none;
+        color: #de7aff;
+        font-size: 1.3rem;
+    }
+
+    a:hover {
+        color: #fffac0;
+    }
+       body h1 {
   text-align: center;
   font-size: 3rem;
   font-family: Handlee;
@@ -75,17 +84,8 @@ p {
   width: auto;
   padding: 20px;
 }
-.card {
-  width: 1.618rem;
-  margin: 10px;
-  padding: 70px;
-  background-color: #b9e3f7;
-}
-.card .card-title {
-  color: #de7aff;
-}
-.card .card-img-top {
-  width: auto;
+.logo {
+    width: 5%;
 }
 .form-control {
   padding: 20px;
@@ -127,17 +127,17 @@ input {
         color: #fffac0;
     }
 
-   
 
     .form-control {
         width: 100%;
     }
 
-    
 
     .logo {
         width: 5%;
     }
+
+    
 }
     </style>
 </head>
@@ -150,11 +150,11 @@ input {
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarToggler">
-            <img class="logo" src="{% static 'images/logo.jpg' %}" alt="Company Logo" style="width: 5%" />
+            <img class="logo" src="{% static 'images/logo.jpg' %}" alt="Company Logo" />
             <ul class="navbar-nav me-auto sm-5 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'home' %}"><i class="fa-sharp fa-solid fa-house"></i></a>
-            </li>
+            </li> 
             <li class="nav-item active">
               <a class="nav-link" aria-current="page" href="{% url 'products' %}">Products</a>
             </li>
@@ -172,7 +172,13 @@ input {
                   class="fa-sharp fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
-         <form class="d-flex ml-auto" id="searchForm">
+          {% if user.is_authenticated %}
+            <h3 style="padding-right: 20px">Welcome {{ user.first_name }}</h3>
+            <a href="{% url 'update_profile' %}" style="padding-right: 20px">Update Profile</a>
+          {% endif %}
+
+  
+          <form class="d-flex ml-auto" id="searchForm">
             <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
           </form>
@@ -206,11 +212,6 @@ input {
                 <h3>MHB Dips</h3>
                 <h3>PO BOX 5555</h3>
                 <h3>Winston Salem, NC, 27106</h3>
-            </div>
-            <div class="col-md-4 text-center">
-                <h3>Social</h3>
-                <a href="http://facebook.com/"><i class="fa-brands fa-facebook fa-xl"></i></a>
-                <a href="http://instagram.com/"><i class="fa-brands fa-instagram fa-xl"></i></a>
             </div>
         </div>
     </div>

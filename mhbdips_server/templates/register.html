@@ -72,6 +72,16 @@ body .navbar .nav-link:hover {
   color: #fffac0;
 }
 
+a  {
+    text-decoration: none;
+    color: #de7aff;
+    font-size: 1.3rem;
+}
+
+a:hover {
+    color: #fffac0;
+}
+
 p {
   justify-content: center;
   text-align: center;
@@ -84,12 +94,6 @@ p {
   padding: 20px;
 }
 
-.card .card-title {
-  color: #de7aff;
-}
-.card .card-img-top {
-  width: auto;
-}
 .form-control {
   padding: 20px;
 }
@@ -107,13 +111,6 @@ input {
 .btn:hover {
   color: #fffac0;
   background-color: #de7aff;
-}
-
-.cart-counter {
-  background-color: #de7aff;
-  color: #fffac0;
-  border-radius: 50%;
-  padding: 5px 10px;
 }
 
 .footer {
@@ -136,17 +133,6 @@ li a {
 li a:hover {
     color: #fffac0;
 }
-.shopping-cart {
-  width: 500px;
-  padding: 20px;
-}
-.form {
-  width: 100%;
-}
-.cart {
-  width: 100%;
-  padding: 10px;
-}
 
 .logo {
     width: 5%;
@@ -166,7 +152,7 @@ li a:hover {
             <ul class="navbar-nav me-auto sm-5 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'home' %}"><i class="fa-sharp fa-solid fa-house"></i></a>
-            </li>
+            </li> 
             <li class="nav-item active">
               <a class="nav-link" aria-current="page" href="{% url 'products' %}">Products</a>
             </li>
@@ -184,7 +170,13 @@ li a:hover {
                   class="fa-sharp fa-solid fa-cart-shopping"></i></a>
             </li>
           </ul>
-         <form class="d-flex ml-auto" id="searchForm">
+          {% if user.is_authenticated %}
+            <h3 style="padding-right: 20px">Welcome {{ user.first_name }}</h3>
+            <a href="{% url 'update_profile' %}" style="padding-right: 20px">Update Profile</a>
+          {% endif %}
+
+  
+          <form class="d-flex ml-auto" id="searchForm">
             <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
           </form>
@@ -278,11 +270,6 @@ li a:hover {
                 <h3>MHB Dips</h3>
                 <h3>PO BOX 5555</h3>
                 <h3>Winston Salem, NC, 27106</h3>
-            </div>
-            <div class="col-md-4 text-center">
-                <h3>Social</h3>
-                <a href="http://facebook.com/"><i class="fa-brands fa-facebook fa-xl"></i></a>
-                <a href="http://instagram.com/"><i class="fa-brands fa-instagram fa-xl"></i></a>
             </div>
         </div>
     </div>
