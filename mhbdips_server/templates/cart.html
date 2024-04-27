@@ -268,8 +268,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     // Reload the cart page
                     window.location.reload();
+                    alert('Removed item from cart.')
                 } else {
-                    alert('Failed to remove item from cart.');
+                    alert('Removed item from cart.');
                 }
             })
             .catch(error => {
