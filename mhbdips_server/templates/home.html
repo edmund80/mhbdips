@@ -69,8 +69,8 @@ body .navbar .nav-link:hover {
   color: #fffac0;
 }
 .img-fluid {
-  width: 60%;
-  height: 45em;
+  width: 70%;
+  height: 70%;
   align-self: center;
     
 }
@@ -202,22 +202,20 @@ li a:hover {
             </div>
             <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-sm-12 col-md-6 col-lg-12">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-12">
             <img src="{{ product.image.url }}" class="img-fluid mx-auto d-block" alt="{{ product.name }}">
         </div>
     </div>
 </div>
-        </section>
-
-    <section>
+       
     <div class="container-fluid">
         <div class="row">
             <h2 class="text-center">Featured Products</h2>
         </div>
         <!-- Featured Product Section -->
-        <div class="row justify-content-center" id="products-container" style="margin-left: 225px;">
+        <div class="row justify-content-center" id="products-container">
             {% for product in featured_products %}
-            <div class="col-md-4 mb-4 {% if forloop.first %}first-card{% endif %} {% if forloop.last %}last-card{% endif %}">
+            <div class="col-md-12 col-sm-12 col-xs-12 col-xxs-12 col-lg-4 mb-4 {% if forloop.first %}first-card{% endif %} {% if forloop.last %}last-card{% endif %}">
                 <div class="card">
                     <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
                     <div class="card-body text-center">

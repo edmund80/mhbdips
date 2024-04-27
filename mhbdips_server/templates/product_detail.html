@@ -97,14 +97,14 @@ p {
 .card {
   width: 31rem;
   margin: 10px;
-  padding: 10px;  
+  padding: 20px;  
   background-color: #b9e3f7;
 }
 .card .card-title {
   color: #de7aff;
 }
 .card-img-top {
-  width: 100%;
+  width: 28rem;
 }
 .form-control {
   padding: 20px;
@@ -251,12 +251,11 @@ li a:hover {
 
 <section>
     <h2>You May Also Like These Products</h2>
-    <div class="row">
+    <div class="row justify-content-center">
         {% for random_product in random_products %}
-            <div class="col-md-4">
+            <div class="col-md-8 col-sm-12 col-xs-12 col-xxs-12col-lg-4 mb-4">
                 <div class="card">
-                    <img src="{{ random_product.image.url }}" class="card-img-top" alt="{{ random_product.name }}"
-                         style="width: 30rem">
+                    <img src="{{ random_product.image.url }}" class="card-img-top" alt="{{ random_product.name }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ random_product.name }}</h5>
                         <a href="{% url 'product_detail' product_id=random_product.id %}" class="btn btn-primary">View

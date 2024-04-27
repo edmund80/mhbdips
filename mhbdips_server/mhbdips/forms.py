@@ -85,5 +85,4 @@ class CheckoutForm(forms.Form):
     address = forms.CharField(label='Address', max_length=255)
     state = forms.CharField(label='State', max_length=100)
     zip_code = forms.CharField(label='ZIP Code', max_length=10)
-    payment_method = forms.ChoiceField(choices=[('payment1', 'Payment Method 1'), ('payment2', 'Payment Method 2')])
     credit_card = forms.CharField(label='Credit Card', max_length=16)

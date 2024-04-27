@@ -217,7 +217,7 @@ li a:hover {
                             {% csrf_token %}
                             <input type="hidden" name="product_id" value="{{ product.id }}">
                             <label class="label" for="quantity">Quantity:</label>
-                            <input class="input" type="number" id="quantity" name="quantity" value="1" min="1">
+                            <input class="input" type="number" id="quantity" name="quantity" value="1" min="1" style="width: 60%"; margin-bottom: 20%>
                             <button type="submit" class="btn btn-outline-success">Add to Cart</button>
                         </form>
                     </div>

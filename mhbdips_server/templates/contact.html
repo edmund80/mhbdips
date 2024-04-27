@@ -230,11 +230,19 @@ li a:hover {
         </div>
       </div>
     </nav>
+<section>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <h1>Contact Me</h1>
+                    </div>
+                </div>
+            </div>
 <section class="contact">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <form id="contactForm" class="form-control" role="contactform" method="post">
+            <div class="col-md-12 col-sm-12 col-sm-12 col-xxs-12 col-lg-12">
+                <form id="contactForm" class="form-control" role="contactform" method="post" style="padding: 20px">
     {% csrf_token %}
     {{ form.as_p }}
     <div class="row mb-3">
