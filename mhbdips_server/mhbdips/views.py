@@ -57,7 +57,6 @@ def update_profile(request):
         form = CustomPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             form.save()
-            # Redirect to the profile page or another appropriate page
             return redirect('profile')
     else:
         form = CustomPasswordChangeForm(request.user)
